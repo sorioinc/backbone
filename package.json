@@ -6,8 +6,7 @@
   "scripts": {
     "test": "test",
     "build:prod": "webpack -p",
-    "build":
-      "webpack-dev-server --entry ./src/app.js --output-filename ./dist/build.js",
+    "build": "webpack-dev-server --entry ./src/app.js --output-filename ./dist/build.js",
     "precommit": "lint-staged"
   },
   "repository": {
@@ -32,10 +31,15 @@
     "lint-staged": "^4.3.0",
     "prettier": "^1.7.4",
     "prettier-eslint": "^8.2.1",
+    "prettier-eslint-cli": "^4.4.0",
     "webpack": "^3.8.1",
     "webpack-dev-server": "^2.9.3"
   },
   "lint-staged": {
-    "*.js": ["prettier-eslint --write", "eslint", "git add"]
+    "*.js": [
+      "prettier-eslint --write",
+      "eslint",
+      "git add"
+    ]
   }
 }
