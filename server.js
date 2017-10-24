@@ -28,16 +28,6 @@ server
 			},
 		});
 
-		// redirect all http request to secure route
-		if (process.env.NODE_ENV === 'production') {
-			server.ext('onRequest', (request, reply) => {
-				if (request.headers['x-forwarded-proto'] !== 'https') {
-					return reply('Forwarding to secure route').redirect(`https://${request.headers.host}${request.path}${request.url.search}`);
-				}
-				reply.continue();
-			});
-		}
-
 		server.ext('onPreResponse', (request, reply) => {
 			const { response } = request;
 
