@@ -13,9 +13,11 @@ const AppView = Backbone.View.extend({
 	template,
 	events: {
 		'click .next': 'nextBlock',
-		'click .previous': 'previousBlock',
+		'click .prev': 'previousBlock',
 	},
 	carousel: {},
+	controls: {},
+	blocks: [],
 	initialize() {
 		this.listenTo(this.collection, 'all', _.debounce(this.render, 0));
 		this.collection.fetch();
@@ -23,16 +25,39 @@ const AppView = Backbone.View.extend({
 	render() {
 		const html = template(this.collection.toJSON());
 		this.$el.html(html);
+
 		const images = this.$el.find('.content');
+
 		this.collection.models.forEach((image) => {
 			const imageView = new ImageView({ model: image });
-			const img = imageView.render().$el.first();
-			images.append(img.html());
+			const img = this.renderBlock(imageView);
+			this.blocks.push({
+				view: imageView,
+				el: img,
+			});
+			images.append(img);
 		});
+
+		this.controls.next = this.$el.find('.next');
+		this.controls.previous = this.$el.find('.prev');
+
 		if (this.collection.models.length > 0) {
 			this.setCarousel();
 		}
+
 		return this;
+	},
+	renderBlock(view) {
+		return view
+			.render()
+			.$el.wrap('<li></li>')
+			.parent();
+	},
+	enableTarget(target) {
+		target.prop('disabled', false);
+	},
+	disableTarget(target) {
+		target.prop('disabled', true);
 	},
 	nextBlock() {
 		this.navigate(1);
@@ -41,41 +66,36 @@ const AppView = Backbone.View.extend({
 		this.navigate(-1);
 	},
 	navigate(direction) {
-		// hide the old current list item
 		this.carousel.current.classList.remove('current');
 
-		// calculate th new position
 		this.carousel.counter += direction;
-		// if the previous one was chosen
-		// and the counter is less than 0
-		// make the counter the last element,
-		// thus looping the carousel
-		if (direction === -1 && this.carousel.counter < 0) {
-			this.carousel.counter = this.carousel.amount - 1;
+
+		if (this.carousel.counter === 0) {
+			this.disableTarget(this.controls.previous);
 		}
-		// if the next button was clicked and there
-		// is no items element, set the counter
-		// to 0
-		if (direction === 1 && !this.carousel.items[this.carousel.counter]) {
-			this.carousel.counter = 0;
+		if (this.carousel.items.length - 1 === this.carousel.counter) {
+			this.disableTarget(this.controls.next);
 		}
-		// set new current element
-		// and add CSS class
+		if (this.carousel.counter > 0 && this.carousel.counter < this.carousel.items.length - 1) {
+			this.enableTarget(this.controls.next);
+			this.enableTarget(this.controls.previous);
+		}
+
+		const view = this.blocks[this.carousel.counter].view; // eslint-disable-line prefer-destructuring
+		this.blocks[this.carousel.counter].el.find('li').html(view.render().$el.html());
+
 		this.carousel.current = this.carousel.items[this.carousel.counter];
 		this.carousel.current.classList.add('current');
 	},
 	setCarousel() {
-		// Read necessary elements from the DOM once
 		const box = document.querySelector('.carouselbox');
-		// Define the global counter, the items and the
-		// current item
+
 		this.carousel.counter = 0;
 		this.carousel.items = box.querySelectorAll('.content li');
 		this.carousel.amount = this.carousel.items.length;
 		this.carousel.current = this.carousel.items[0]; // eslint-disable-line prefer-destructuring
 		box.classList.add('active');
-		// show the first element
-		// (when direction is 0 counter doesn't change)
+
 		this.navigate(0);
 	},
 });

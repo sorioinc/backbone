@@ -11,7 +11,7 @@ const Router = Backbone.Router.extend({
 	},
 
 	home() {
-		$('#carousel').html(view.render().el);
+		$('#carousel').append(view.render().$el);
 	},
 
 	initialize() {
