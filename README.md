@@ -1,7 +1,7 @@
 ![Logo of the project](https://whitespectrecom.s3.amazonaws.com/sites/590a11fecf63d900145cf136/theme/images/w-s-logo.svg?1493993325)
 
 # Whitespectre Exercise
-> Carousel exercised requested by Whitespectre.
+> Carousel exercise requested by Whitespectre.
 
 
 ## Installing / Getting started
@@ -35,6 +35,7 @@ apm install prettier-atom
 ### Built With
 - Backbone
 - JQuery
+- Webpack
 - ES6
 - Prettier
 - ESLint

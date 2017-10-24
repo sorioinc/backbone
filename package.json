@@ -4,10 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "npm run build:prod",
     "test": "test",
     "build:prod": "webpack -p",
-    "build": "webpack-dev-server --entry ./src/app.js --output-filename ./dist/build.js",
-    "precommit": "lint-staged"
+    "build":
+      "webpack-dev-server --entry ./src/app.js --output-filename ./dist/build.js",
+    "precommit": "lint-staged",
+    "start":
+      "node --optimize_for_size --max_old_space_size=460 --gc_interval=100 server.js"
   },
   "repository": {
     "type": "git",
@@ -38,10 +42,10 @@
     "webpack-dev-server": "^2.9.3"
   },
   "lint-staged": {
-    "*.js": [
-      "prettier-eslint --write",
-      "eslint",
-      "git add"
-    ]
+    "*.js": ["prettier-eslint --write", "eslint", "git add"]
+  },
+  "dependencies": {
+    "hapi": "^16.6.2",
+    "inert": "^4.2.1"
   }
 }
